@@ -32,7 +32,7 @@ Example:
 /opt/security/ioc_ths.sh https://ioc.server.com ioc-collector.com john_smith
 ```
 
-This will download IOCs from https://ioc.server.com, upload reports to user john_smith on ioc-collector.com.
+This will download IOCs from ioc.server.com, upload reports to user john_smith on ioc-collector.com.
 
 The cron job added by the script will run it daily with these parameters.
 
