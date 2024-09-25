@@ -31,7 +31,7 @@ Function Initiate_Check {
         Write-Host "WARNING: An unexpected error occurred while validating the URL."
     }
 }
-#
+
 
 
 Initiate_Check
