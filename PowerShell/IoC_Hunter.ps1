@@ -1,7 +1,7 @@
 $hostname = hostname
 $date = Get-Date -Format "yyyy-MM-dd-HH:mm"
-$working_path = "/opt/security/oporation"
-$errors_path = "/opt/security/errors"
+$working_path = "C:\Users\barjaw\Downloads\IoC_Working_Path\opt\security\oporation"
+$errors_path = "C:\Users\barjaw\Downloads\IoC_Working_Path\opt\security\errors"
 $datestamp = Get-Date -Format "yyyyMMdd"
 $server_url = $args[0]
 $upload_server = $args[1]
@@ -30,6 +30,17 @@ Function Initiate_Check {
     } else {
         Write-Host "WARNING: An unexpected error occurred while validating the URL."
     }
+
+    if (-Not (Test-Path -Path $working_path -PathType Container)) {
+        Write-Host "Directory not found. Creating new directory at: $working_path"
+        New-Item -Path $working_path -ItemType Directory -Force > $null
+        Write-Host "Directory created successfully at: $working_path"
+        $flag1 = "1"
+        Write-Host $flag1
+    } else {
+        Write-Host "Directory already exists at: $working_path. No action needed."
+    }
+    
 }
 
 
