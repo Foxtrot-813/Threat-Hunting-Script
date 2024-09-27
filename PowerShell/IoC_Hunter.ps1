@@ -23,10 +23,10 @@ Write-Host "======================= IOC Hunter ======================="
 Function Initiate_Check {
     if ($server_url -Match "^http://") {
         Write-Host "WARNING: The URL uses HTTP. Only HTTPS is supported for secure communication."
-    } elseif ($server_url -NotMatch "^http") {
+    } elseif ($server_url -NotMatch "^http://") {
         Write-Host "WARNING: The URL provided does not include a valid HTTPS scheme."
     } elseif ($server_url -Match "^https://") {
-        Write-Host "Validation successful: HTTPS protocol detected."
+        Write-Host "URL alidation successful: HTTPS protocol detected."
     } else {
         Write-Host "WARNING: An unexpected error occurred while validating the URL."
     }
