@@ -1,14 +1,15 @@
 $hostname = hostname
+$userProfilePath = $env:USERPROFILE
 $date = Get-Date -Format "yyyy-MM-dd-HH:mm"
-$working_path = "C:\Users\barjaw\Downloads\IoC_Working_Path\opt\security\oporation\"
-$errors_path = "C:\Users\barjaw\Downloads\IoC_Working_Path\opt\security\errors"
+$working_path = "$userProfilePath\Downloads\IoC_Working_Path\opt\security\oporation\"
+$errors_path = "$userProfilePath\Downloads\IoC_Working_Path\opt\security\errors"
 # $datestamp = Get-Date -Format "yyyyMMdd"
 $datestamp ="20231122"
 $server_url = $args[0]
 $upload_server = $args[1]
 $user_identity = $args[2]
-$flag1 = "0"
-$flag2 = "0"
+$flag_1 = "0"
+$flag_2 = "0"
 
 # Log files
 $ioc_file = "IOC-$datestamp.ioc"
@@ -38,8 +39,7 @@ Function Initiate_Check {
         Write-Host "Directory not found. Creating new directory at: $working_path"
         New-Item -Path $working_path -ItemType Directory -Force > $null
         Write-Host "Directory created successfully at: $working_path"
-        $flag1 = "1"
-        Write-Host $flag1
+        $script:flag_1 = "1"  # Update the script-scoped variable, not just the local function scope.
     } else {
         Write-Host "Directory already exists at: $working_path. No action needed."
     }
@@ -50,7 +50,8 @@ Function Initiate_Check {
 # Restore system environment
 Function restore_system_env {
     Write-Host "Restoring the previous system environment...."
-    if ($flag1 -eq "0") {
+    Set-Location "$userProfilePath"
+    if ($flag_1 -eq "0") {
         if (Test-Path "$working_path$ioc_file") {
             Remove-Item "$working_path$ioc_file" -Force
             Write-Host "File $ioc_file in $working_path deleted successfully."
@@ -100,11 +101,12 @@ Function restore_system_env {
             Remove-Item "$working_path\msg" -Force
             Write-Host "File msg in $working_path deleted successfully."
         }
-    } elseif ($flag1 -eq "1") {
-        Remove-Item "/opt/security/working" -Recurse -Force
-        Write-Host "/opt/security/working directory deleted successfully."
+    } elseif ($flag_1 -eq "1") {
+        Start-Sleep -Seconds 2
+        Remove-Item "$userProfilePath\Downloads\IoC_Working_Path\" -Recurse -Force
+        Write-Host "$userProfilePath\Downloads\IoC_Working_Path\ directory deleted successfully."
     }
-    
+    # Check and delete error log file in /opt/security/errors directory
 
 
 }
