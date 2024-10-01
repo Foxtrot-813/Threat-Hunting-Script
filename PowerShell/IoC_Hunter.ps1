@@ -1,7 +1,7 @@
 $hostname = hostname
 $userProfilePath = $env:USERPROFILE
 $date = Get-Date -Format "yyyy-MM-dd-HH:mm"
-$working_path = "$userProfilePath\Downloads\IoC_Working_Path\opt\security\oporation\"
+$working_path = "$userProfilePath\Downloads\IoC_Working_Path\opt\security\working\"
 $errors_path = "$userProfilePath\Downloads\IoC_Working_Path\opt\security\errors"
 # $datestamp = Get-Date -Format "yyyyMMdd"
 $datestamp ="20231122"
@@ -56,7 +56,7 @@ Function restore_system_env {
             Remove-Item "$working_path$ioc_file" -Force
             Write-Host "File $ioc_file in $working_path deleted successfully."
         }
-    
+        
         if (Test-Path "$working_path$ioc_gpg") {
             Remove-Item "$working_path$ioc_gpg" -Force
             Write-Host "File $ioc_gpg in $working_path deleted successfully."
@@ -102,12 +102,21 @@ Function restore_system_env {
             Write-Host "File msg in $working_path deleted successfully."
         }
     } elseif ($flag_1 -eq "1") {
+        Write-Host "Pausing execution for 2 seconds at line 105"
         Start-Sleep -Seconds 2
-        Remove-Item "$userProfilePath\Downloads\IoC_Working_Path\" -Recurse -Force
-        Write-Host "$userProfilePath\Downloads\IoC_Working_Path\ directory deleted successfully."
+        Remove-Item "$working_path\" -Recurse -Force
+        Write-Host "$working_path directory deleted successfully."
     }
     # Check and delete error log file in /opt/security/errors directory
-
+    if ($flag_2 -eq "0") {
+        if (Test-Path $errors_path$error_file) {
+            Remove-Item $errors_path$error_file -Force
+            Write-Host "File $error_file in $error_path deleted successfully."
+        }
+    } elseif ($flag_2 -eq "1") {
+        Remove-Item "$errors_path" -Recurse -Force
+    }
+    Write-Host "System Restored."
 
 }
 
