@@ -13,10 +13,10 @@ $workingDirectoryCreatedFlag = "0"
 $errorDirectoryCreatedFlag = "0"
 
 # Log files
-$iocFileName = "IOC-$datestamp.ioc"
-$iocGPGFileName = "IOC-${datestamp}.gpg"
-$iocLogFileName = "IOC-${datestamp}.log"
-$errorLogFileName = "error-${datestamp}.log"
+$iocFile = "IOC-$datestamp.ioc"
+$iocGPGFile = "IOC-${datestamp}.gpg"
+$iocLogFile = "IOC-${datestamp}.log"
+$errorLogFile = "error-${datestamp}.log"
 
 Write-Host "CND-Hunter by 8$([char]0x039B)$([char]0x042F)24$([char]0x0418)1"
 Write-Host "TTH IoC Check for $hostname $currentTimestamp STARTED"
@@ -68,19 +68,19 @@ Function Restore-SystemEnv {
     Write-Host "Restoring the previous system environment...."
     Set-Location "$userProfileDirectory"
     if ($workingDirectoryCreatedFlag -eq "0") {
-        if (Test-Path "$workingDirectoryPath$iocFileName") {
-            Remove-Item "$workingDirectoryPath$iocFileName" -Force
-            Write-Host "File $iocFileName in $workingDirectoryPath deleted successfully."
+        if (Test-Path "$workingDirectoryPath$iocFile") {
+            Remove-Item "$workingDirectoryPath$iocFile" -Force
+            Write-Host "File $iocFile in $workingDirectoryPath deleted successfully."
         }
         
-        if (Test-Path "$workingDirectoryPath$iocGPGFileName") {
-            Remove-Item "$workingDirectoryPath$iocGPGFileName" -Force
-            Write-Host "File $iocGPGFileName in $workingDirectoryPath deleted successfully."
+        if (Test-Path "$workingDirectoryPath$iocGPGFile") {
+            Remove-Item "$workingDirectoryPath$iocGPGFile" -Force
+            Write-Host "File $iocGPGFile in $workingDirectoryPath deleted successfully."
         }
     
-        if (Test-Path "$workingDirectoryPath$iocLogFileName") {
-            Remove-Item "$workingDirectoryPath$iocLogFileName" -Force
-            Write-Host "File $iocLogFileName in $workingDirectoryPath deleted successfully."
+        if (Test-Path "$workingDirectoryPath$iocLogFile") {
+            Remove-Item "$workingDirectoryPath$iocLogFile" -Force
+            Write-Host "File $iocLogFile in $workingDirectoryPath deleted successfully."
         }
     
         if (Test-Path "$workingDirectoryPath\binfailure") {
@@ -127,8 +127,8 @@ Function Restore-SystemEnv {
     # Check and delete error log file in /opt/security/errors directory
     if ($errorDirectoryCreatedFlag -eq "0") {
         Start-Sleep -Seconds 2
-        Remove-Item $errorDirectoryPath$errorLogFileName
-        Write-Host "File $errorLogFileName in $errorDirectoryPath deleted successfully."
+        Remove-Item $errorDirectoryPath$errorLogFile -Force
+        Write-Host "File $errorLogFile in $errorDirectoryPath deleted successfully."
     }
     elseif ($errorDirectoryCreatedFlag -eq "1") {
         Start-Sleep -Seconds 2
@@ -148,7 +148,7 @@ Function ErrorHandling {
     if (-Not (Test-Path -Path $errorDirectoryPath)) {
         New-Item -Path $errorDirectoryPath -ItemType Directory -Force > $null
     }
-    Write-Output "Hostname: $hostname Timestamp: $currentTimestamp $error_msg" >> $errorDirectoryPath$errorLogFileName
+    Write-Output "Hostname: $hostname Timestamp: $currentTimestamp $error_msg" >> $errorDirectoryPath$errorLogFile
 
     if ($severity -eq "CRITICAL") {
         Write-Host "Abort..."
@@ -163,6 +163,24 @@ Function FailedStage () {
     )
     Write-Host "FAILED $stage - Hostname: $hostname Timestamp: $currentTimestamp"
 }
+
+# Download the daily IoC file
+Function DownloadFiles () {
+    if ($serverUrl[-1] -eq "/") {
+        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" -ErrorAction Stop
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 ValidateParameters
 ErrorHandling
