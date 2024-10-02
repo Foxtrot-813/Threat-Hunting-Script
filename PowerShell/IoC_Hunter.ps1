@@ -157,9 +157,16 @@ Function ErrorHandling {
     }
 }
 
+Function FailedStage () {
+    param (
+        [string]$stage
+    )
+    Write-Host "FAILED $stage - Hostname: $hostname Timestamp: $currentTimestamp"
+}
+
 ValidateParameters
 ErrorHandling
-
+FailedStage "Download"
 
 
 
