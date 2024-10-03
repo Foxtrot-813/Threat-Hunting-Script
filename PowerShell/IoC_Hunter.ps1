@@ -167,7 +167,9 @@ Function FailedStage () {
 # Download the daily IoC file
 Function DownloadFiles () {
     if ($serverUrl[-1] -eq "/") {
-        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" -ErrorAction Stop
+        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" 
+    } elseif ($serverUrl[-1] -ne "/") {
+        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" 
     }
 }
 
@@ -184,12 +186,12 @@ Function DownloadFiles () {
 
 ValidateParameters
 ErrorHandling
-FailedStage "Download"
+# FailedStage "Download"
+DownloadFiles
 
 
 
-
-Restore-SystemEnv
+#Restore-SystemEnv
 
 
 
