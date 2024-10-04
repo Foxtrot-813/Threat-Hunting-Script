@@ -189,6 +189,13 @@ Function DownloadFiles () {
     
 }
 
+Function ValidateIocIntegrity () {
+    gpg --verify $iocGPGFile $iocFile
+    If ($LASTEXITCODE -ne 0) {
+        $ErrorMessage = "WARN: Signature verification failed for $iocFile"
+        ErrorHandling $ErrorMessage "CRITICAL"
+    }
+}
 
 
 
@@ -202,9 +209,8 @@ Function DownloadFiles () {
 
 ValidateParameters
 ErrorHandling
-# FailedStage "Download"
 DownloadFiles
-
+ValidateIocIntegrity
 
 
 #Restore-SystemEnv
