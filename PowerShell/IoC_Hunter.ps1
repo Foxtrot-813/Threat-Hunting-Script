@@ -35,9 +35,11 @@ Function ValidateParameters {
     }
     elseif ($serverUrl -NotMatch "^http[s]?://") {
         Write-Host "WARNING: The URL provided does not include a valid HTTP or HTTPS scheme."
+        exit 1
     }
     else {
         Write-Host "WARNING: An unexpected error occurred while validating the URL."
+        exit 1
     }
 
     if (-Not (Test-Path -Path $workingDirectoryPath -PathType Container)) {
@@ -166,11 +168,25 @@ Function FailedStage () {
 
 # Download the daily IoC file
 Function DownloadFiles () {
-    if ($serverUrl[-1] -eq "/") {
-        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" 
-    } elseif ($serverUrl[-1] -ne "/") {
-        Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" 
+    try {
+        if ($serverUrl[-1] -eq "/") {
+            Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" -ErrorAction SilentlyContinue
+            Invoke-WebRequest -Uri "$serverUrl$iocGPGFile" -OutFile "$workingDirectoryPath$iocGPGFile" -ErrorAction SilentlyContinue
+        } elseif ($serverUrl[-1] -ne "/") {
+            Invoke-WebRequest -Uri "$serverUrl/$iocFile" -OutFile "$workingDirectoryPath$iocFile" -ErrorAction SilentlyContinue
+            Invoke-WebRequest -Uri "$serverUrl/$iocGPGFile" -OutFile "$workingDirectoryPath$iocGPGFile" -ErrorAction SilentlyContinue
+        } else {
+            Invoke-WebRequest -Uri "$serverUrl$iocFile" -OutFile "$workingDirectoryPath$iocFile" -ErrorAction SilentlyContinue
+            Invoke-WebRequest -Uri "$serverUrl$iocGPGFile" -OutFile "$workingDirectoryPath$iocGPGFile" -ErrorAction SilentlyContinue
+        }
     }
+    catch {
+        if (-Not $?) {
+            FailedStage "to download IOC files"
+            exit 1
+        }
+    }
+    
 }
 
 
