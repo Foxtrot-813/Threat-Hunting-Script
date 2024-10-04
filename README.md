@@ -1,6 +1,6 @@
 # Threat Hunting Script
 
-This script automates various threat hunting tasks on a Linux system.
+Thess script automates various threat hunting tasks on Linux and Windows systems.
 
 ## Overview
 
